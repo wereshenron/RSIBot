@@ -1,17 +1,23 @@
 import json
 import yfinance
 import requests
+import pandas as pd
 
 
 class ApiHandler:
 
     @staticmethod
-    def fetch_historical_prices():
+    def fetch_historical_prices(symbol):
         historical_data = {}
-        get_apple_data = yfinance.Ticker('AAPL')
-        last_five_close = get_apple_data.history(period="5d")['Close']
-        print(last_five_close)
-        # return historical_prices
+        apple_data = yfinance.Ticker(symbol)
+        last_fourteen_close = pd.DataFrame(apple_data.history(period="14d"))
+
+        for index, row in last_fourteen_close.iterrows():
+            date = index.strftime("%Y-%m-%d")
+            close_price = row['Close']
+            historical_data[date] = close_price
+
+        return pd.DataFrame.from_dict(historical_data, orient='index', columns=['Prices'])
 
     @staticmethod
     def fetch_current_price(SYMBOL, API_KEY):

@@ -23,20 +23,16 @@ app.template_folder = template_dir
 api_handler = ApiHandler.ApiHandler()
 pd.set_option('display.max_columns', None)
 
+historical_data = {}
+
 
 @app.route('/')
 def index():
-    # Generate some sample data (replace with real-time stock data)
-    x = [1, 2, 3, 4, 5]
-    y = [5, 7, 3, 8, 4]
-
-    # Create a simple line plot using Matplotlib
-    plt.plot(x, y)
-    plt.xlabel('Time')
-    plt.ylabel('Price')
+    historical_data.plot()
 
     # Save the plot to a BytesIO object
     img = BytesIO()
+    plt.xticks(rotation=90)
     plt.savefig(img, format='png')
     img.seek(0)
 
@@ -50,7 +46,7 @@ def index():
 
 
 if __name__ == '__main__':
-    historical_data = api_handler.fetch_historical_prices()
-    print(historical_data)
-    # webbrowser.open('http://127.0.0.1:5000/')
-    # app.run(debug=True)
+    historical_data = api_handler.fetch_historical_prices(symbol)
+    # print(historical_data)
+    webbrowser.open('http://127.0.0.1:5000/')
+    app.run(debug=True)
